@@ -17,5 +17,3 @@ contract ERC20Script is Script {
         vm.stopBroadcast();
     }
 }
-rm -rf foundry/.git 
-find . -name ".git" -type d
