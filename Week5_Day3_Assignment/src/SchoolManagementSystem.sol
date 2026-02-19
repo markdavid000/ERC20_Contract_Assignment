@@ -34,6 +34,16 @@ contract SchoolManagement {
         _;
     }
 
+    modifier notStudent(address _address) {
+        require(students[_address].studentAddress == address(0), "ADDRESS BELONGS TO A STUDENT");
+        _;
+    }
+
+    modifier notStaff(address _address) {
+        require(!staffs[_address].exists, "ADDRESS BELONGS TO A STAFF");
+        _;
+    }
+
     constructor(address _token, address _admin) validAddress(_token) validAddress(_admin) {
         token = IERC20(_token);
         owner = msg.sender;
@@ -82,7 +92,7 @@ contract SchoolManagement {
         levelFees[400] = 400 * 10**18;
     }
 
-    function enrollStudent(string memory _name, uint256 _age, uint256 _level, address _student) external onlyAdmin() validLevel(_level) validAddress(_student) {
+    function enrollStudent(string memory _name, uint256 _age, uint256 _level, address _student) external onlyAdmin() validLevel(_level) validAddress(_student) notStaff(_student) {
         require(students[_student].level == 0, "STUDENT ALREADY REGISTERED");
         require(_student != owner, "YOU'RE THE SCHOOL OWNER");
         require(_student != admin, "YOU'RE THE SCHOOL ADMIN");
@@ -123,7 +133,7 @@ contract SchoolManagement {
         return list;
     }
 
-    function employStaff(address _staff, string memory _name, string memory _role, uint256 _salary) external onlyOwner() validAddress(_staff) {
+    function employStaff(address _staff, string memory _name, string memory _role, uint256 _salary) external onlyOwner() validAddress(_staff) notStudent(_staff) {
         require(!staffs[_staff].exists, "STAFF ALREADY EMPLOYED");
         require(_salary > 0, "SALARY MUST BE GREATER THAN 0");
 
@@ -146,7 +156,7 @@ contract SchoolManagement {
         emit StaffEmployed(_staff, _name, _role, _salary);
     }
 
-    function payStaff(address _staff) external onlyOwner() validAddress(_staff) {
+    function payStaff(address _staff) external onlyOwner() validAddress(_staff) notStudent(_staff) {
         require(_staff != owner, "YOU'RE THE SCHOOL OWNER");
         require(_staff != admin, "YOU'RE THE SCHOOL ADMIN");
 
