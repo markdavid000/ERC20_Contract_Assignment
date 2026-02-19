@@ -52,7 +52,7 @@ contract ERC20 {
     function _allowance(address _owner, address _spender) public view returns (uint256) {
         return allowance[_owner][_spender];
     }
-
+    
     function transfer(address _to, uint256 _value) public returns (bool success) {
         require(_to != address(0), "Can't transfer to zero address");
         

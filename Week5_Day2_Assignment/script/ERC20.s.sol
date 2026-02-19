@@ -12,8 +12,10 @@ contract ERC20Script is Script {
     function run() public {
         vm.startBroadcast();
 
-        erc20 = new ERC20("MyToke", "MTK", 18, 1000000 * 10**18);
+        erc20 = new ERC20("MyToken", "MTK", 18, 1000000 * 10**18);
 
         vm.stopBroadcast();
     }
 }
+rm -rf foundry/.git 
+find . -name ".git" -type d
