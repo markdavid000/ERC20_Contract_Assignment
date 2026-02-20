@@ -76,8 +76,8 @@ contract SchoolManagement {
     mapping(address => Student) students;
     mapping(address => Staff) staffs;
 
-    address[] allStudents;
-    address[] allStaffs;
+    Student[] allStudents;
+    Staff[] allStaffs;
 
     mapping(uint256 => uint256) levelFees;
 
@@ -115,7 +115,7 @@ contract SchoolManagement {
             paidAt: block.timestamp
         });
 
-        allStudents.push(_student);
+        allStudents.push(students[_student]);
 
         studentIdCounter++;
 
@@ -123,19 +123,14 @@ contract SchoolManagement {
     }
 
     function getAllStudentsWithDetails() external view returns (Student[] memory) {
-        uint256 count = allStudents.length;
-        Student[] memory list = new Student[](count);
-
-        for (uint256 i = 0; i < count; i++) {
-            list[i] = students[allStudents[i]];
-        }
-
-        return list;
+        return allStudents;
     }
 
     function employStaff(address _staff, string memory _name, string memory _role, uint256 _salary) external onlyOwner() validAddress(_staff) notStudent(_staff) {
         require(!staffs[_staff].exists, "STAFF ALREADY EMPLOYED");
         require(_salary > 0, "SALARY MUST BE GREATER THAN 0");
+        require(_staff != owner, "YOU'RE THE SCHOOL OWNER");
+        require(_staff != admin, "YOU'RE THE SCHOOL ADMIN");
 
         uint256 staffId = staffIdCounter;
 
@@ -149,7 +144,7 @@ contract SchoolManagement {
             exists: true
         });
 
-        allStaffs.push(_staff);
+        allStaffs.push(staffs[_staff]);
 
         staffIdCounter++;
 
@@ -172,7 +167,7 @@ contract SchoolManagement {
         emit StaffPaid(_staff, st.salary, block.timestamp);
     }
 
-    function getAllStaff() external view returns(address[] memory) {
+    function getAllStaff() external view returns(Staff[] memory) {
         return allStaffs;
     }
 
