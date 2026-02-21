@@ -45,7 +45,9 @@ contract SchoolManagement {
     }
 
     constructor(address _token, address _admin) validAddress(_token) validAddress(_admin) {
-        require(msg.sender != _admin, "ADMIN CAN'T BE THE OWNER");
+        require(_admin != msg.sender, "ADMIN CAN'T BE THE OWNER");
+        require(_token != msg.sender, "TOKEN CAN'T BE THE OWNER");
+        require(_token != _admin, "TOKEN CAN'T BE THE OWNER");
         token = IERC20(_token);
         owner = msg.sender;
         admin = _admin;
