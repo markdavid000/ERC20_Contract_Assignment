@@ -45,6 +45,7 @@ contract SchoolManagement {
     }
 
     constructor(address _token, address _admin) validAddress(_token) validAddress(_admin) {
+        require(msg.sender != _admin, "ADMIN CAN'T BE THE OWNER");
         token = IERC20(_token);
         owner = msg.sender;
         admin = _admin;
@@ -126,6 +127,9 @@ contract SchoolManagement {
     }
 
     function removeStudent(address _student) external onlyAdmin validAddress(_student) {
+        require(_student != owner, "YOU'RE THE SCHOOL OWNER");
+        require(_student != admin, "YOU'RE THE SCHOOL ADMIN");
+
         Student storage st = students[_student];
 
         require(st.studentAddress != address(0), "STUDENT NOT FOUND");
@@ -192,7 +196,13 @@ contract SchoolManagement {
 
     function suspendStaff(address _staff, bool _suspend) external onlyOwner() validAddress(_staff) notStudent(_staff) {
         require(staffs[_staff].exists, "STAFF NOT FOUND");
-        
+
+        for (uint8 i; i < allStaffs.length; i++) {
+            if (allStaffs[i].staffAddress == _staff) {
+                allStaffs[i].suspended = _suspend;
+            }
+        }
+
         staffs[_staff].suspended = _suspend;
         
         emit StaffSuspended(_staff, _suspend);
