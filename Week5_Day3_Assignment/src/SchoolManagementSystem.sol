@@ -1,15 +1,15 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.13;
 
-import "./IERC20.sol";
+import {IERC20} from "./IERC20.sol";
 
 contract SchoolManagement {
     IERC20 token;
     address owner;
     address admin;
 
-    uint256 public studentIdCounter;
-    uint256 public staffIdCounter;
+    uint256 studentIdCounter;
+    uint256 staffIdCounter;
 
     modifier onlyOwner() {
         require(msg.sender == owner, "YOU'RE NOT THE OWNER");
@@ -137,6 +137,7 @@ contract SchoolManagement {
         require(st.studentAddress != address(0), "STUDENT NOT FOUND");
 
         uint256 length = allStudents.length;
+
         for (uint256 i = 0; i < length; i++) {
             if (allStudents[i].studentAddress == _student) {
                 allStudents[i] = allStudents[length - 1];
@@ -197,6 +198,8 @@ contract SchoolManagement {
     }
 
     function suspendStaff(address _staff, bool _suspend) external onlyOwner() validAddress(_staff) notStudent(_staff) {
+        require(_staff != owner, "YOU'RE THE SCHOOL OWNER");
+        require(_staff != admin, "YOU'RE THE SCHOOL ADMIN");
         require(staffs[_staff].exists, "STAFF NOT FOUND");
 
         for (uint8 i; i < allStaffs.length; i++) {
@@ -206,7 +209,7 @@ contract SchoolManagement {
         }
 
         staffs[_staff].suspended = _suspend;
-        
+
         emit StaffSuspended(_staff, _suspend);
     }
 
