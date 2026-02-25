@@ -5,8 +5,8 @@ import {IERC20} from "./IERC20.sol";
 
 contract SchoolManagement {
     IERC20 token;
-    address owner;
-    address admin;
+    address public owner;
+    address public admin;
 
     uint256 studentIdCounter;
     uint256 staffIdCounter;
@@ -83,7 +83,7 @@ contract SchoolManagement {
     Student[] allStudents;
     Staff[] allStaffs;
 
-    mapping(uint256 => uint256) levelFees;
+    mapping(uint256 => uint256) public levelFees;
 
     event StudentEnrolled(address indexed student, string name, uint256 level, uint256 feePaid, uint256 timestamp);
     event StaffEmployed(address indexed staff, string name, string role, uint256 salary);
